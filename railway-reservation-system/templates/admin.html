@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<div class="card">
+  <h3>Report</h3>
+  <p>Net revenue (paid minus refunds): <strong>Rs {{ '%.2f'|format(report.revenue) }}</strong></p>
+  <p>{% for s in report.by_status %}<span class="badge {{ s.status }}">{{ s.status }}: {{ s.c }}</span> {% else %}<span class="muted">No bookings yet.</span>{% endfor %}</p>
+  <table>
+    <tr><th>Train</th><th>Active bookings</th></tr>
+    {% for t in report.by_train %}<tr><td>{{ t.train_no }} {{ t.train_name }}</td><td>{{ t.c }}</td></tr>{% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h3>Add train</h3>
+  <form method="post" action="{{ url_for('admin_add_train') }}" class="grid">
+    <label>Train no <input name="train_no" required></label>
+    <label>Name <input name="train_name" required></label>
+    <label>Source <input name="source" required></label>
+    <label>Destination <input name="destination" required></label>
+    <label>Seats per class <input name="total_seats" type="number" min="1" required></label>
+    <button class="btn">Add</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Add schedule</h3>
+  <form method="post" action="{{ url_for('admin_add_schedule') }}" class="grid">
+    <label>Train <select name="train_no">{% for t in trains %}<option value="{{ t.train_no }}">{{ t.train_no }} {{ t.train_name }}</option>{% endfor %}</select></label>
+    <label>Date <input type="date" name="journey_date" required></label>
+    <label>Departure <input type="time" name="departure" required></label>
+    <label>Arrival <input type="time" name="arrival" required></label>
+    <label>Base fare (SL) <input type="number" step="0.01" min="1" name="base_fare" required></label>
+    <button class="btn">Add</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Update fare (all upcoming schedules of a train)</h3>
+  <form method="post" action="{{ url_for('admin_update_fare') }}" class="grid">
+    <label>Train <select name="train_no">{% for t in trains %}<option value="{{ t.train_no }}">{{ t.train_no }} {{ t.train_name }}</option>{% endfor %}</select></label>
+    <label>New base fare <input type="number" step="0.01" min="1" name="base_fare" required></label>
+    <button class="btn">Update</button>
+  </form>
+</div>
+{% endblock %}

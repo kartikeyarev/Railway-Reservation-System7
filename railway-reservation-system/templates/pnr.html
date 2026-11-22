@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>PNR Status</h1>
+<form class="card grid" method="post">
+  <label>10-digit PNR <input name="pnr" value="{{ pnr }}" pattern="[0-9]{10}" maxlength="10" required></label>
+  <button class="btn">Check status</button>
+</form>
+{% if b %}
+<div class="card">
+  <p><strong>PNR {{ b.pnr }}</strong> <span class="badge {{ b.status }}">{{ b.status }}{% if wl %} (WL {{ wl }}){% endif %}</span></p>
+  <p>{{ b.train_no }} {{ b.train_name }} &middot; {{ b.source }} &rarr; {{ b.destination }}<br>
+     {{ b.journey_date }} {{ b.departure }} &middot; Class {{ b.travel_class }}</p>
+  <table>
+    <tr><th>#</th><th>Passenger</th><th>Seat</th><th>Berth</th></tr>
+    {% for p in pax %}
+    <tr><td>{{ loop.index }}</td><td>{{ p.name[0] }}{{ '*' * (p.name|length - 1) }}</td>
+        <td>{{ p.seat_no or '-' }}</td><td>{{ p.berth or '-' }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}

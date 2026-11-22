@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>My Bookings</h1>
+{% if not rows %}<p class="muted">No bookings yet. <a href="{{ url_for('index') }}">Search trains</a></p>{% else %}
+<table>
+  <tr><th>PNR</th><th>Train</th><th>Date</th><th>Class</th><th>Fare</th><th>Status</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td><a href="{{ url_for('ticket', pnr=r.pnr) }}">{{ r.pnr }}</a></td>
+    <td>{{ r.train_no }} {{ r.train_name }}<br><span class="muted">{{ r.source }} &rarr; {{ r.destination }}</span></td>
+    <td>{{ r.journey_date }} {{ r.departure }}</td><td>{{ r.travel_class }}</td>
+    <td>Rs {{ '%.2f'|format(r.total_fare) }}</td><td><span class="badge {{ r.status }}">{{ r.status }}</span></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

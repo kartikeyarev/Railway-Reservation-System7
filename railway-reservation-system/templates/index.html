@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search Trains</h1>
+<form class="card grid" method="get" action="{{ url_for('index') }}">
+  <label>From <input name="source" value="{{ q.source }}" list="cities" placeholder="e.g. Prayagraj"></label>
+  <label>To <input name="destination" value="{{ q.destination }}" list="cities" placeholder="e.g. New Delhi"></label>
+  <label>Date <input type="date" name="date" value="{{ q.date }}" min="{{ today }}"></label>
+  <label>Class
+    <select name="cls">
+      <option value="">All</option>
+      {% for c in classes %}<option value="{{ c }}" {{ 'selected' if q.cls == c }}>{{ c }}</option>{% endfor %}
+    </select>
+  </label>
+  <button class="btn">Search</button>
+  <datalist id="cities">{% for c in cities %}<option value="{{ c }}">{% endfor %}</datalist>
+</form>
+
+{% if results is not none %}
+  {% if not results %}
+    <p class="muted">No trains found for this search.</p>
+  {% else %}
+  <table>
+    <tr><th>Train</th><th>Route</th><th>Date</th><th>Dep / Arr</th><th>Availability and fare</th></tr>
+    {% for r in results %}
+    <tr>
+      <td><strong>{{ r.train_no }}</strong><br>{{ r.train_name }}</td>
+      <td>{{ r.source }} &rarr; {{ r.destination }}</td>
+      <td>{{ r.journey_date }}</td>
+      <td>{{ r.departure }} / {{ r.arrival }}</td>
+      <td>
+        {% for c in r.classes %}
+        <div class="chip">
+          <span><strong>{{ c.cls }}</strong> &middot; Rs {{ '%.0f'|format(c.fare) }} &middot;
+            {% if c.avail > 0 %}Available {{ c.avail }}{% else %}Waiting list{% endif %}</span>
+          <a class="btn small" href="{{ url_for('book', schedule_id=r.schedule_id, cls=c.cls) }}">Book</a>
+        </div>
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+{% endif %}
+{% endblock %}

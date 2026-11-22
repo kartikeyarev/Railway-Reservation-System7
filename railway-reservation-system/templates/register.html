@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card narrow">
+  <h1>Register</h1>
+  <form method="post" class="grid" style="grid-template-columns:1fr">
+    <label>Full name <input name="name" required></label>
+    <label>Email <input type="email" name="email" required></label>
+    <label>Phone <input name="phone"></label>
+    <label>Password (min 6 characters) <input type="password" name="password" minlength="6" required></label>
+    <button class="btn">Create account</button>
+  </form>
+</div>
+{% endblock %}

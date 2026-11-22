@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Book Ticket</h1>
+<div class="card">
+  <strong>{{ sch.train_no }} {{ sch.train_name }}</strong><br>
+  {{ sch.source }} &rarr; {{ sch.destination }} &middot; {{ sch.journey_date }} &middot; {{ sch.departure }}<br>
+  Class <strong>{{ cls }}</strong> &middot; Rs {{ '%.2f'|format(fare) }} per passenger &middot;
+  {% if avail > 0 %}{{ avail }} seats available{% else %}Class full: booking goes to the waiting list{% endif %}
+</div>
+<form method="post" class="card">
+  <input type="hidden" name="cls" value="{{ cls }}">
+  <h3>Passengers (up to {{ max_pax }})</h3>
+  <div id="rows">
+    <div class="pax-row">
+      <label>Name <input name="name" required></label>
+      <label>Age <input name="age" type="number" min="1" max="120" required></label>
+      <label>Gender <select name="gender"><option value="M">M</option><option value="F">F</option><option value="O">O</option></select></label>
+      <span></span>
+    </div>
+  </div>
+  <button type="button" class="btn small" id="add">+ Add passenger</button>
+  <h3>Payment (simulated)</h3>
+  <label style="max-width:320px">Mode
+    <select name="payment_mode">{% for m in modes %}<option>{{ m }}</option>{% endfor %}</select>
+  </label>
+  <p><button class="btn">Pay and book</button></p>
+</form>
+<script>
+const rows = document.getElementById('rows'), max = {{ max_pax }};
+document.getElementById('add').onclick = () => {
+  if (rows.children.length >= max) return;
+  const c = rows.firstElementChild.cloneNode(true);
+  c.querySelectorAll('input').forEach(i => i.value = '');
+  c.lastElementChild.outerHTML = '<button type="button" class="btn small danger" onclick="this.parentElement.remove()">Remove</button>';
+  rows.appendChild(c);
+};
+</script>
+{% endblock %}

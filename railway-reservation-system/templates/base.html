@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Railway Reservation System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <a class="brand" href="{{ url_for('index') }}">Railway Reservation System</a>
+  <nav>
+    <a href="{{ url_for('index') }}">Search</a>
+    <a href="{{ url_for('pnr_status') }}">PNR Status</a>
+    {% if session.user_id %}
+      <a href="{{ url_for('bookings') }}">My Bookings</a>
+      {% if session.role == 'admin' %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+      <a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  {% for category, msg in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ category }}">{{ msg }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
